@@ -10,9 +10,9 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = () => {
-    if (!input) return;
+    if (!input || isLoading) return;
 
-    setMessages([...messages, { text: input, isUser: true }]);
+    setMessages([{ text: input, isUser: true }]);
     setInput('');
     setIsLoading(true);
 
@@ -23,10 +23,7 @@ const Home = () => {
 
     const intervalId = setInterval(() => {
       currentMessage += `${words[i]} `;
-      setMessages((prevMessages) => [
-        ...prevMessages.slice(0, prevMessages.length - 1),
-        { text: currentMessage, isUser: false },
-      ]);
+      setMessages([{ text: currentMessage, isUser: false }]);
       i++;
 
       if (i === words.length) {
@@ -36,16 +33,30 @@ const Home = () => {
     }, 30);
   };
 
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.scrollHeight <= 100) {
+      e.target.style.height = 'auto';
+      e.target.style.height = `${e.target.scrollHeight}px`;
+    }
+    setInput(e.target.value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="flex flex-col justify-between h-screen bg-[#212121] p-4">
       <h1 className="text-[#F9F9F9] text-3xl font-bold text-center mb-6">Chat Simulation</h1>
       <div className="flex justify-center mb-4">
-        <input
-          type="text"
+        <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-          className="w-1/2 px-4 py-2 rounded-full bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none"
+          onChange={handleTextareaChange}
+          onKeyDown={handleKeyDown}
+          className="w-1/2 min-h-[2rem] max-h-[10rem] px-4 py-2 rounded-lg bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none resize-none"
           placeholder="Type your message..."
         />
         <div
