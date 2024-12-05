@@ -2,35 +2,24 @@
 
 import { useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
-import { generateRandomParagraph } from './text';
 
 const Home = () => {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSend = () => {
     if (!input || isLoading) return;
 
-    setMessages([{ text: input, isUser: true }]);
     setInput('');
+    setMessage(null); // Clear the previous message
     setIsLoading(true);
 
-    const randomParagraph = generateRandomParagraph(15);
-    const words = randomParagraph.split(' ');
-    let currentMessage = '';
-    let i = 0;
-
-    const intervalId = setInterval(() => {
-      currentMessage += `${words[i]} `;
-      setMessages([{ text: currentMessage, isUser: false }]);
-      i++;
-
-      if (i === words.length) {
-        clearInterval(intervalId);
-        setIsLoading(false);
-      }
-    }, 30);
+    // Simulate response
+    setTimeout(() => {
+      setMessage("Hello Output");
+      setIsLoading(false);
+    }, 1000); // Simulate delay of 1000ms
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -72,14 +61,16 @@ const Home = () => {
       </div>
       <div className="flex-1 overflow-y-auto mb-6 flex justify-center">
         <div className="w-full max-w-[70%]">
-          {messages.map((msg, idx) => (
-            <div
-              key={idx}
-              className={`my-2 p-2 rounded-lg ${msg.isUser ? 'bg-[#2F2F2F] self-end' : 'bg-[#444] self-start'}`}
-            >
-              <span className="text-[#F9F9F9]">{msg.text}</span>
+          {isLoading && (
+            <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
+              <span className="text-[#F9F9F9]">Loading...</span>
             </div>
-          ))}
+          )}
+          {!isLoading && message && (
+            <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
+              <span className="text-[#F9F9F9]">{message}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
