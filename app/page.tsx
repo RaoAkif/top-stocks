@@ -60,7 +60,7 @@ const Home = () => {
           value={input}
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          className="w-1/2 min-h-[2rem] max-h-[10rem] px-4 pt-5 rounded-lg bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none resize-none"
+          className="w-1/2 min-h-[2rem] max-h-[10rem] px-4 py-2 rounded-lg bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none resize-none"
           placeholder="Type your message..."
         />
         <div
