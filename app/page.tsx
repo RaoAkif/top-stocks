@@ -10,11 +10,10 @@ const Home = () => {
 
   const handleSend = async () => {
     if (!input || isLoading) return;
-
-    setInput('');
+  
     setMessage(null); // Clear the previous message
     setIsLoading(true);
-
+  
     try {
       const response = await fetch('https://txt-embd.onrender.com/get-embedding/', {
         method: 'POST',
@@ -23,20 +22,20 @@ const Home = () => {
         },
         body: JSON.stringify({ text: input }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch embeddings.');
       }
-
+  
       const data = await response.json();
-      setMessage(JSON.stringify(data.embedding, null, 2)); // Display the embeddings in JSON format
+      setMessage(JSON.stringify(data.embedding, null, 2));
     } catch (error) {
       setMessage('Error: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.scrollHeight <= 100) {
       e.target.style.height = 'auto';
@@ -54,7 +53,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col justify-between h-screen bg-[#212121] p-4">
-      <h1 className="text-[#F9F9F9] text-3xl font-bold text-center mb-6">Chat Simulation</h1>
+      <h1 className="text-[#F9F9F9] text-3xl font-bold text-center mb-6">Top Stocks Search</h1>
       <div className="flex justify-center items-center mb-4">
         <textarea
           value={input}
@@ -65,7 +64,7 @@ const Home = () => {
         />
         <div
           onClick={handleSend}
-          className={`ml-2 flex justify-center items-center w-12 h-12 cursor-pointer rounded-full transition-all ${isLoading ? 'bg-[#333]' : 'bg-[#2F2F2F]'}`}
+          className={`ml-2 flex justify-center items-center w-12 h-12 pb-1 pr-1 cursor-pointer rounded-full transition-all ${isLoading ? 'bg-[#333]' : 'bg-[#2F2F2F]'}`}
         >
           {isLoading ? (
             <div className="w-6 h-6 border-4 border-[#F9F9F9] border-t-transparent rounded-full animate-spin"></div>
