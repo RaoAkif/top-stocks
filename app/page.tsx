@@ -8,18 +8,33 @@ const Home = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input || isLoading) return;
 
     setInput('');
     setMessage(null); // Clear the previous message
     setIsLoading(true);
 
-    // Simulate response
-    setTimeout(() => {
-      setMessage("Hello Output");
+    try {
+      const response = await fetch('https://txt-embd.onrender.com/get-embedding/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: input }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch embeddings.');
+      }
+
+      const data = await response.json();
+      setMessage(JSON.stringify(data.embedding, null, 2)); // Display the embeddings in JSON format
+    } catch (error) {
+      setMessage('Error: ' + (error as Error).message);
+    } finally {
       setIsLoading(false);
-    }, 1000); // Simulate delay of 1000ms
+    }
   };
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,12 +55,12 @@ const Home = () => {
   return (
     <div className="flex flex-col justify-between h-screen bg-[#212121] p-4">
       <h1 className="text-[#F9F9F9] text-3xl font-bold text-center mb-6">Chat Simulation</h1>
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center items-center mb-4">
         <textarea
           value={input}
           onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
-          className="w-1/2 min-h-[2rem] max-h-[10rem] px-4 py-2 rounded-lg bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none resize-none"
+          className="w-1/2 min-h-[2rem] max-h-[10rem] px-4 pt-5 rounded-lg bg-[#2F2F2F] text-[#F9F9F9] focus:outline-none resize-none"
           placeholder="Type your message..."
         />
         <div
@@ -61,14 +76,9 @@ const Home = () => {
       </div>
       <div className="flex-1 overflow-y-auto mb-6 flex justify-center">
         <div className="w-full max-w-[70%]">
-          {isLoading && (
+          {message && (
             <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
-              <span className="text-[#F9F9F9]">Loading...</span>
-            </div>
-          )}
-          {!isLoading && message && (
-            <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
-              <span className="text-[#F9F9F9]">{message}</span>
+              <pre className="text-[#F9F9F9] whitespace-pre-wrap">{message}</pre>
             </div>
           )}
         </div>
