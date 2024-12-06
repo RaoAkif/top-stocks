@@ -43,14 +43,14 @@ const Home = () => {
 
       // Step 2: Query Pinecone for similar items
       const pineconeResponse = await fetch(
-        "https://nyse-d3tf7gs.svc.aped-4627-b74a.pinecone.io/query",
+        "https://nyse-vahacxe.svc.aped-4627-b74a.pinecone.io/query",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Api-Key":
               process.env.PINECONE_API_KEY ||
-              "pcsk_6Xmi37_PvParSyccpaGtPAXZcL3uzQooGDMKhWLz7WNM5NBvfunui67gogpzisJkDADq4y",
+              "pcsk_5GQWiD_Kuesb5xDFAjcWqMsge1kJEiNwTurCzq1DxcBWWtvVfjS44wJabEHyx9rce9CAtn",
           },
           body: JSON.stringify({
             vector: rawQueryEmbedding,
