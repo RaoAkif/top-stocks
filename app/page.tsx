@@ -89,12 +89,20 @@ const Home = () => {
     }
   };
 
+  const SkeletonCard = () => (
+    <div className="bg-[#333] p-6 rounded-lg shadow-lg animate-pulse">
+      <div className="h-6 bg-gray-500 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-gray-600 rounded w-1/2 mb-2"></div>
+      <div className="h-4 bg-gray-600 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-600 rounded w-3/4"></div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col justify-between h-screen bg-[#212121] p-4">
-      <h1 className="text-[#F9F9F9] text-3xl font-bold text-center mb-6">
+      <h1 className="text-[#F9F9F9] text-2xl font-bold text-center mb-6">
         Top Stocks Search
       </h1>
-      <p>What are some companies that manufacture consumer hardware?</p>
       <div className="flex justify-center items-center mb-4">
         <textarea
           value={input}
@@ -116,73 +124,68 @@ const Home = () => {
           )}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto mb-6 flex justify-center">
-        <div className="w-full max-w-[90%] grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="flex-1 mb-6 flex justify-center px-20 mx-48">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mr-10 ml-10">
           {message && (
-            <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
-              <pre className="text-[#F9F9F9] whitespace-pre-wrap">
-                {message}
-              </pre>
+            <div className="my-2 p-2 rounded-lg bg-[#444] self-start w-full">
+              <pre className="text-[#F9F9F9] whitespace-pre-wrap">{message}</pre>
             </div>
           )}
-          {matches.length > 0 && (
-            <div className="my-2 p-2 rounded-lg bg-[#444] text-[#F9F9F9] w-full">
-              <h2 className="text-lg font-bold mb-4">Top Matches:</h2>
-              <ul>
-                {matches.slice(0, 10).map((match, index) => (
-                  <li
-                    key={index}
-                    className="bg-[#333] p-6 rounded-lg shadow-lg mb-4"
-                  >
-                    <h3 className="text-xl font-semibold mb-2">
-                      {match.metadata.Name}
-                    </h3>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Industry/Sector:</strong>{" "}
-                      {match.metadata.Industry} / {match.metadata.Sector}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Location:</strong> {match.metadata.City},{" "}
-                      {match.metadata.State}, {match.metadata.Country}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Ticker Symbol:</strong> {match.metadata.Ticker}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Founded Year:</strong>{" "}
-                      {match.metadata.Founded ? match.metadata.Founded : "N/A"}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Brief Description:</strong>{" "}
-                      {match.metadata["Business Summary"].slice(0, 150)}...
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Key Markets/Segments:</strong>{" "}
-                      {match.metadata.Industry}, {match.metadata.Sector}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Operating Regions:</strong>{" "}
-                      {match.metadata.OperatingRegions || "N/A"}
-                    </p>
-                    <p className="text-sm text-[#bbb]">
-                      <strong>Key Services/Products:</strong>
-                      <ul className="list-disc ml-4">
-                        {match.metadata.text
-                          .toString()
-                          .split(", ")
-                          .slice(0, 3)
-                          .map((service, index) => (
-                            <li key={index} className="text-sm">
-                              {service}
-                            </li>
-                          ))}
-                      </ul>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />)
+            : matches.length > 0 && (
+                <div className="my-2 p-2 rounded-lg text-[#F9F9F9] w-full col-span-full">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                    {matches.slice(0, 10).map((match, index) => (
+                      <li
+                        key={index}
+                        className="bg-[#333] p-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl max-w-[500px]"
+                      >
+                        <h3 className="text-2xl font-semibold mb-4 text-[#F9F9F9] text-left">
+                          {match.metadata.Name}
+                        </h3>
+
+                        <div className="flex items-center text-[#F9F9F9] text-sm mb-2 text-left">
+                          <i className="fas fa-industry text-[#35AE47] mr-2"></i>
+                          <span>
+                            <strong>Industry:</strong> {match.metadata.Industry} / {" "}
+                            {match.metadata.Sector}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center text-[#F9F9F9] text-sm mb-2 text-left">
+                          <i className="fas fa-map-marker-alt text-[#6C71FF] mr-2"></i>
+                          <span>
+                            <strong>Location:</strong> {match.metadata.City}, {" "}
+                            {match.metadata.State}, {match.metadata.Country}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center text-[#F9F9F9] text-sm mb-2 text-left">
+                          <i className="fas fa-chart-line text-[#6C71FF] mr-2"></i>
+                          <span>
+                            <strong>Ticker Symbol:</strong> {match.metadata.Ticker}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center text-[#F9F9F9] text-sm mb-2 text-left">
+                          <i className="fas fa-calendar-alt text-[#EA8444] mr-2"></i>
+                          <span>
+                            <strong>Founded Year:</strong> {match.metadata.Founded || "N/A"}
+                          </span>
+                        </div>
+
+                        <div className="text-[#F9F9F9] text-sm mb-4 text-left pl-2">
+                          <strong>Key Markets/Segments:</strong>
+                          <ul className="list-disc ml-4">
+                            {match.metadata.Industry}, {match.metadata.Sector}
+                          </ul>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
         </div>
       </div>
     </div>
