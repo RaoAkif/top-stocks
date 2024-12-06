@@ -7,35 +7,65 @@ const Home = () => {
   const [input, setInput] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  interface Match {
+    score: number;
+    id: string;
+    metadata: Record<string, string | number | boolean>;
+  }
+
+  const [matches, setMatches] = useState<Match[]>([]);
 
   const handleSend = async () => {
     if (!input || isLoading) return;
-  
+
     setMessage(null); // Clear the previous message
     setIsLoading(true);
-  
+
     try {
-      const response = await fetch('https://txt-embd.onrender.com/get-embedding/', {
+      // Step 1: Fetch embedding from the API
+      const embeddingResponse = await fetch('https://txt-embd.onrender.com/get-embedding/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ text: input }),
       });
-  
-      if (!response.ok) {
+
+      if (!embeddingResponse.ok) {
         throw new Error('Failed to fetch embeddings.');
       }
-  
-      const data = await response.json();
-      setMessage(JSON.stringify(data.embedding, null, 2));
+
+      const embeddingData = await embeddingResponse.json();
+      const rawQueryEmbedding = embeddingData.embedding;
+
+      // Step 2: Query Pinecone for similar items
+      const pineconeResponse = await fetch('https://nyse-d3tf7gs.svc.aped-4627-b74a.pinecone.io/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': process.env.PINECONE_API_KEY || 'pcsk_6Xmi37_PvParSyccpaGtPAXZcL3uzQooGDMKhWLz7WNM5NBvfunui67gogpzisJkDADq4y',
+        },
+        body: JSON.stringify({
+          vector: rawQueryEmbedding,
+          top_k: 10,
+          include_metadata: true,
+          namespace: 'stock-descriptions',
+        }),
+      });
+
+      if (!pineconeResponse.ok) {
+        throw new Error('Failed to query Pinecone.');
+      }
+
+      const pineconeData = await pineconeResponse.json();
+      setMatches(pineconeData.matches || []);
     } catch (error) {
       setMessage('Error: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.scrollHeight <= 100) {
       e.target.style.height = 'auto';
@@ -78,6 +108,20 @@ const Home = () => {
           {message && (
             <div className="my-2 p-2 rounded-lg bg-[#444] self-start">
               <pre className="text-[#F9F9F9] whitespace-pre-wrap">{message}</pre>
+            </div>
+          )}
+          {matches.length > 0 && (
+            <div className="my-2 p-2 rounded-lg bg-[#444] text-[#F9F9F9]">
+              <h2 className="text-lg font-bold mb-2">Top Matches:</h2>
+              <ul>
+                {matches.map((match, index) => (
+                  <li key={index} className="mb-2">
+                    <div>Score: {match.score.toFixed(4)}</div>
+                    <div>ID: {match.id}</div>
+                    <div>Metadata: {JSON.stringify(match.metadata, null, 2)}</div>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
