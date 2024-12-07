@@ -36,6 +36,5 @@ export const queryPinecone = async (vector: number[], topK = 10) => {
     throw new Error("Failed to query Pinecone.");
   }
 
-  console.log(response.json());
   return response.json();
 };
