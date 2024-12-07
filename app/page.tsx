@@ -15,6 +15,8 @@ const Home = () => {
 
   const [matches, setMatches] = useState<Match[]>([]);
 
+  console.log(matches);
+
   const handleSend = async () => {
     if (!input || isLoading) return;
 
