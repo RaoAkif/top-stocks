@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Top Stocks Search
 
-## Getting Started
+Top Stocks Search is a React-based web application designed to allow users to search for stock information based on their input. It uses embeddings to find similar items from Pinecone, providing a dynamic user experience where stock details such as industry, sector, and ticker symbol are displayed.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Stock Search**: Enter a query to find similar stocks based on embeddings.
+- **Loading State**: Skeleton loading cards show while the data is being fetched.
+- **Dynamic Display**: Displays search results with detailed stock information including industry, location, ticker, and founded year.
+- **Responsive Design**: The app adjusts its layout depending on the device screen size.
+- **Real-Time Search**: Uses a backend API to fetch embeddings and query Pinecone for similar items in real time.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **Backend**: Pinecone for vector search
+- **Icons**: React Icons for UI elements
+- **Styling**: Tailwind CSS for responsive design
+- **API**: Custom backend API for fetching stock embeddings
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Installation
 
-## Learn More
+1. Clone the repository to your local machine:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/your-username/top-stocks-search.git
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install the dependencies:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   cd top-stocks-search
+   npm install
+   ```
 
-## Deploy on Vercel
+3. Set up environment variables:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Create a `.env` file at the root of the project and add your Pinecone API key:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```
+   PINECONE_API_KEY=your-pinecone-api-key
+   ```
+
+4. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+   The app will be accessible at [http://localhost:3000](http://localhost:3000).
+
+## Usage
+
+1. Type your stock query into the text area.
+2. Press the "Send" button (or hit Enter) to fetch matching stocks.
+3. Results are displayed dynamically with information such as industry, ticker symbol, location, and key markets.
+
+## UI/UX Design
+
+The design is minimalistic and responsive:
+
+- The main area shows a search input and a dynamic list of stock results.
+- While data is loading, skeleton cards are shown.
+- Stock data includes key details about each stock, such as:
+  - **Name**
+  - **Industry/Sector**
+  - **Location**
+  - **Ticker Symbol**
+  - **Founded Year**
+  - **Key Markets/Segments**
+
+## Environment Variables
+
+- `PINECONE_API_KEY`: Your Pinecone API key for querying stock embeddings.
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -am 'Add feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- Pinecone for vector search capabilities.
+- Next.js and Tailwind CSS for building the user interface.
+- React Icons for useful icons.
