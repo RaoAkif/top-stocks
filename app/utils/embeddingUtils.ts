@@ -5,7 +5,9 @@ export const fetchEmbedding = async (text: string) => {
     throw new Error("EMBEDDING_URL is not defined.");
   }
 
-  const response = await fetch(API_CONFIG.EMBEDDING_URL, {
+  const url = API_CONFIG.EMBEDDING_URL as string; // Explicitly cast to string
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
