@@ -1,6 +1,10 @@
 import { API_CONFIG } from "../config/apiConfig";
 
 export const fetchEmbedding = async (text: string) => {
+  if (!API_CONFIG.EMBEDDING_URL) {
+    throw new Error("EMBEDDING_URL is not defined.");
+  }
+
   const response = await fetch(API_CONFIG.EMBEDDING_URL, {
     method: "POST",
     headers: {
@@ -18,11 +22,15 @@ export const fetchEmbedding = async (text: string) => {
 };
 
 export const queryPinecone = async (vector: number[], topK = 10) => {
+  if (!API_CONFIG.PINECONE_URL) {
+    throw new Error("PINECONE_URL is not defined.");
+  }
+
   const response = await fetch(API_CONFIG.PINECONE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Api-Key": API_CONFIG.PINECONE_API_KEY,
+      ...(API_CONFIG.PINECONE_API_KEY && { "Api-Key": API_CONFIG.PINECONE_API_KEY }),
     },
     body: JSON.stringify({
       vector,
